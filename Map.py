@@ -124,6 +124,52 @@ def NeighborSquares(arraySquare):
     return(neighborSquare)
 
 
+def DistancesOfSquares(edges,arraySquare,neighborSquares):
+    Number_way=[0 for way in range(180)]
+    Number_way_length=180
+    open_ways=0
+
+
+    for x in range(len(edges)):
+        way_self=Edges[x].SqSize
+        Matrix_way2[x][x]=way_self  #corresponts to edges[x] to edges[x] points
+        #Way3min[Number_way[way_self]][way_self]=[x,x]
+        Number_way[way_self]=1+Number_way[way_self]
+        open_ways=open_ways+1
+
+    count=0
+    way=0
+
+
+    #while open_ways>0 and way<2 and count<10:
+    for way in range(180):
+
+        if Number_way[way]>0:
+            for n in range(Number_way[way]):
+
+
+
+                [p1,p2]=Way3min[n][way]
+
+
+                open_ways=open_ways-1
+
+                neighbor=circle3(Edges[p2][0],Edges[p2][1],Edges[p2][2])
+
+            #way12=Matrix_way2[p1][p2]
+
+
+                for p3_pointway in neighbor:
+                
+                    p3=p3_pointway[3]
+                    if Matrix_way2[p1][p3] ==0:
+                        mat=way+p3_pointway[2]
+                        open_ways=open_ways+1
+                        Matrix_way2[p1][p3]=mat
+                       # Way3min[Number_way[mat]][mat]=[p1,p3]
+                        Number_way[mat]=1+Number_way[mat]
+
+
 class Map:
     def __init__(self, array):
         validateMapSize(array)
