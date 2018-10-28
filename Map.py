@@ -84,7 +84,7 @@ def arrayWithSquareInfo(array):
             
             for y2 in range(SqSize):
                 for x2 in range(SqSize):
-                    arraySquareInfo[x+x2][y+y2]=PointTuple(arraySquareInfo[x+x2][y+y2],x,y,SqSize,SqIndex)#[x,y,n,Edges_index] # n=size
+                    arraySquareInfo[x+x2][y+y2]=PointTuple(x,y,SqSize,SqIndex)#[x,y,n,Edges_index] # n=size arraySquareInfo[x+x2][y+y2],
                     
             SqIndex=SqIndex +1
     return(Edges,arraySquareInfo)
@@ -125,6 +125,9 @@ def NeighborSquares(arraySquare):
 
 
 def DistancesOfSquares(edges,arraySquare,neighborSquares):
+    
+    Matrix_way2=[[0 for point2 in edges] for point1 in edges]
+    Way3min=[[0 for way in range(180)] for y in range(min(len(edges)**2,15000))] 
     Number_way=[0 for way in range(180)]
     Number_way_length=180
     open_ways=0
@@ -133,7 +136,7 @@ def DistancesOfSquares(edges,arraySquare,neighborSquares):
     for x in range(len(edges)):
         way_self=Edges[x].SqSize
         Matrix_way2[x][x]=way_self  #corresponts to edges[x] to edges[x] points
-        #Way3min[Number_way[way_self]][way_self]=[x,x]
+        Way3min[Number_way[way_self]][way_self]=[x,x]
         Number_way[way_self]=1+Number_way[way_self]
         open_ways=open_ways+1
 
@@ -154,20 +157,21 @@ def DistancesOfSquares(edges,arraySquare,neighborSquares):
 
                 open_ways=open_ways-1
 
-                neighbor=circle3(Edges[p2][0],Edges[p2][1],Edges[p2][2])
-
+                #neighbor=circle3(Edges[p2][0],Edges[p2][1],Edges[p2][2]) #list of [x,y,n,Edges_index], now: number xsquare, ysquare, sizesquare, SquareIndex
+                neighbors=neighborSquares
             #way12=Matrix_way2[p1][p2]
 
 
-                for p3_pointway in neighbor:
+                for p3_pointway in neighbors:
                 
-                    p3=p3_pointway[3]
+                    p3=p3_pointway.SquareIndex
                     if Matrix_way2[p1][p3] ==0:
-                        mat=way+p3_pointway[2]
+                        mat=way+p3_pointway.sizesquare
                         open_ways=open_ways+1
                         Matrix_way2[p1][p3]=mat
-                       # Way3min[Number_way[mat]][mat]=[p1,p3]
+                        Way3min[Number_way[mat]][mat]=[p1,p3]
                         Number_way[mat]=1+Number_way[mat]
+    return(Matrix_way2)     
 
 
 class Map:
@@ -234,11 +238,13 @@ class Path:
         location=self.map.arraySquareInfo[self.x_start][self.y_start]
         goal=self.map.arraySquareInfo[self.x_goal][self.y_goal]
         while true:
-            path.add(location) #PointTuple(arraySquareInfo[x+x2][y+y2],x,y,SqSize,SqIndex)
+            path.add(location) #PointTuple(x,y,SqSize,SqIndex)
             if location==goal:
                 break
             for loc in self.map.neighborSquares[location.x][location.y]:
-                if 
+                if self.distancesOfSquares[loc.SqIndex][goal.SqIndex] 
+                      < self.distancesOfSquares[loc.SqIndex][goal.SqIndex]:
+                    location=loc
         
                     path.add(location)
         
