@@ -69,7 +69,7 @@ def arrayWithSquareInfo(array):
             Bool=True
             while  Bool:# n+1<min(w-x,h-y) and    if n+1=min: n=w-1-x
                 if SqSize==w-x or SqSize==h-y:#    min(w-x,h-y):
-                    #Bool=False
+                    Bool=False
                     break
 
                 for j in range(SqSize+1): #step one: 0,1
@@ -82,8 +82,8 @@ def arrayWithSquareInfo(array):
             
             Edges=Edges+[Square(x,y,SqSize)]   
             
-            for y2 in range(n):
-                for x2 in range(n):
+            for y2 in range(SqSize):
+                for x2 in range(SqSize):
                     arraySquareInfo[x+x2][y+y2]=PointTuple(arraySquareInfo[x+x2][y+y2],x,y,SqSize,SqIndex)#[x,y,n,Edges_index] # n=size
                     
             SqIndex=SqIndex +1
@@ -99,8 +99,10 @@ def NeighborSquares(arraySquare):
 
         if 0 <= xn < height and \
            0 <= yn < width :
-            LongSquare=Square(arraySquare[xn][yn])
-            Set.add(Square(LongSquare.x, LongSquare.y, Longsquare.sizesquare) #Set.add(Square(arraySquare[xn][yn]))
+            #LongSquare=Square(arraySquare[xn][yn])
+            #Set.add(Square(LongSquare.x, LongSquare.y, Longsquare.sizesquare) #Set.add(Square(arraySquare[xn][yn]))
+            point=arraySquare[xn][yn]
+            Set.add(Square(point.xsquare,point.ysquare,point.sizesquare))
         return(Set)
 
     neighborSquare=[[0 for x in arraySquare] for y in arraySquare[0]]#[[0 for x in range(len(arraySquare))] for y in range(len(arraySquare[0]))]
@@ -155,10 +157,65 @@ class StructuredMap(Map):
 
     def getNeighborSquares(self,x,y):
         return(self.neighborSquares[x][y])
+                    
+    def __str__(self):
+        arrayprint=[['' for _ in self.array[0]] for _ in self.array]
+        for x in range(self.width):
+            for y in range(self.hight): 
+                arrayprint[x][y]=str(arraySquareInfo[x][y].SqSize)+'-'+str(arraySquareInfo[x][y].SqIndex)
+                if arraySquareInfo[x][y].SqSize==0:
+                    arrayprint[x][y]='XXX'
+        print(arrayprint)
+        
 
     def __repr__(self):
         return (f'{self.__class__.__name__}('
-                f'{self.array!r})')                 
+                f'{self.array!r})')     
+                    
+                    
+class Path:
+    def __init__(self, StructuredMap,x_start,y_start,x_goal,y_goal):
+        self.map=StructuredMap
+        self.x_start=x_start
+        self.y_start=y_start
+        self.x_goal=x_goal
+        self.y_goal=y_goal
+        self.path=self.pathfinding()#list of square-indexes
+        self.pathset=set(self.path)
+                    
+    def pathfinding(self):
+        path=[]
+        location=self.map.arraySquareInfo[self.x_start][self.y_start]
+        goal=self.map.arraySquareInfo[self.x_goal][self.y_goal]
+        while true:
+            path.add(location) #PointTuple(arraySquareInfo[x+x2][y+y2],x,y,SqSize,SqIndex)
+            if location==goal:
+                break
+            for loc in self.map.neighborSquares[location.x][location.y]:
+                if 
+        
+                    path.add(location)
+        
+         
+    def __str__(self):
+        arrayprint=[['' for _ in self.map.array[0]] for _ in self.map.array]
+        for x in range(self.width):
+            for y in range(self.hight): 
+                if (x,y) in self.pathset:
+                    arraypint[x][y]=self.path.index((x,y))
+                    continue
+                if arraySquareInfo[x][y].SqSize==0:
+                    arrayprint[x][y]='X'
+                    continue
+                arrayprint[x][y]=' '
+        print(arrayprint)
+        print(self.path)
+        
+                    
+                    
+    def __repr__(self):
+        return (f'{self.__class__.__name__}('
+                f'{self.path!r})')  
 
 
 
