@@ -247,6 +247,7 @@ class Path:
                     location=loc
         
                     path.add(location)
+        return(path)
         
          
     def __str__(self):
