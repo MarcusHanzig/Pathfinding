@@ -25,32 +25,32 @@ def validateMapSize(array):
         for number in line:
             if not isinstance(number, int):
                 raise ArrayContainsNonInteger(number)
-            if number not in [0,-1]:
+            if number not in [0,1]:
                 raise NumberHasToBe0Or1(number)
 
-    hight=len(array)
+    height=len(array)
     width=len(array[0])
-    if height < 20 or \
+    if height < 10 or \
        height > 50 or \
-       width  < 20 or \
+       width  < 10 or \
        width  > 50: 
-        raise WrongMapSize(high,width)
+        raise WrongMapSize(height,width)
     for line in array:
         if len(line)!=width:
             raise LinesOfArrayNotEquallyLong(len(line), 'length of the line',line)
 
 
-PointTuple=namedtuple('PointTuple',[number,  #orignial Value of the Field, -1 not passable, 0 passable
-                                    xsquare, #x-coordinate of the left bottom cornerstone of the square containing the field
-                                    ysquare, #y-cordinate of the right top ... (see above)
-                                    sizesquare, #size of the square containing the point
-                                    SquareIndex, #Index of the square containing the point
-                                              ])
+PointTuple=namedtuple('PointTuple', 'xsquare ysquare sizesquare indexsquare'#number,  #orignial Value of the Field, -1 not passable, 0 passable
+                                    #xsquare, #x-coordinate of the left bottom cornerstone of the square containing the field
+                                    #ysquare, #y-cordinate of the right top ... (see above)
+                                    #sizesquare, #size of the square containing the point
+                                    #indexsquare, #Index of the square containing the point
+                                              )
 
-Square=namedtuple('Square',[x, # coordinate of left side
-                            y, # coordinate of bottom side
-                            n, # size of the Square
-                            ])
+Square=namedtuple('Square', 'x y n')#x, # coordinate of left side
+                            #y, # coordinate of bottom side
+                            #n, # size of the Square
+                            #])
 
 def arrayWithSquareInfo(array):
     arraySquareInfo=array
@@ -108,8 +108,8 @@ def NeighborSquares(arraySquare):
     neighborSquare=[[0 for x in arraySquare] for y in arraySquare[0]]#[[0 for x in range(len(arraySquare))] for y in range(len(arraySquare[0]))]
     for x in range(len(arraySquare)): 
         for y in range(len(arraySquare[0])):  
-            if x != arraySquare.x! or \
-               y != arraySquare.y!:
+            if x != arraySquare.xsquare or \
+               y != arraySquare.ysquare:
                 neighborSquare[x][y]=neighborSquare[neighborSquare[x][y].x][neighborSquare[x][y].y]
                 continue
 
@@ -185,13 +185,17 @@ class Map:
         return(self.array[x][y])
 
     def __repr__(self):
-        return (f'{self.__class__.__name__}('
-                f'{self.array!r})')
+        pass
+        #return (f'{self.__class__.__name__}('
+        #        f'{self.array!r})')
 
-class StructuredMap(Map):
+class StructuredMap():#Map
 
     def __init__(self, array):
-        super().__init__(array)
+        validateMapSize(array)
+        self.array=array
+        self.height=len(array)
+        self.width=len(array[0])
         self.edges , \
         self.arraySquare=arrayWithSquareInfo(array)
         self.neighborSquares=NeighborSquares(self.arraySquare)
@@ -212,15 +216,16 @@ class StructuredMap(Map):
         arrayprint=[['' for _ in self.array[0]] for _ in self.array]
         for x in range(self.width):
             for y in range(self.hight): 
-                arrayprint[x][y]=str(arraySquareInfo[x][y].SqSize)+'-'+str(arraySquareInfo[x][y].SqIndex)
+                arrayprint[x][y]=str(self.arraySquare[x][y].sizesquareSqSize)+'-'+str(self.arraySquare[x][y].indexsquare)
                 if arraySquareInfo[x][y].SqSize==0:
                     arrayprint[x][y]='XXX'
         print(arrayprint)
         
 
     def __repr__(self):
-        return (f'{self.__class__.__name__}('
-                f'{self.array!r})')     
+        pass
+        #return (f'{self.__class__.__name__}('
+        #        f'{self.array!r})')     
                     
                     
 class Path:
@@ -242,8 +247,8 @@ class Path:
             if location==goal:
                 break
             for loc in self.map.neighborSquares[location.x][location.y]:
-                if self.distancesOfSquares[loc.SqIndex][goal.SqIndex] 
-                      < self.distancesOfSquares[loc.SqIndex][goal.SqIndex]:
+                #a,b=loc.indexsquasre,goal.indexsquare
+                if self.distancesOfSquares[loc.indexsquare][goal.indexsquare] < self.distancesOfSquares[loc.indexsquare][goal.indexsquare] :
                     location=loc
         
                     path.add(location)
@@ -255,9 +260,9 @@ class Path:
         for x in range(self.width):
             for y in range(self.hight): 
                 if (x,y) in self.pathset:
-                    arraypint[x][y]=self.path.index((x,y))
+                    arrayprint[x][y]=self.path.index((x,y))
                     continue
-                if arraySquareInfo[x][y].SqSize==0:
+                if arraySquareInfo[x][y].sizesquare==0:
                     arrayprint[x][y]='X'
                     continue
                 arrayprint[x][y]=' '
@@ -267,14 +272,28 @@ class Path:
                     
                     
     def __repr__(self):
-        return (f'{self.__class__.__name__}('
-                f'{self.path!r})')  
+        pass
+        #return (f'{self.__class__.__name__}('
+        #        f'{self.path!r})')  
 
 
 
 
 
-
+Field=[
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,0,1,1,1,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,1,1,1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,0,1,1,1,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,1,1,1,1,1,1,1,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+        
+MapF=StructuredMap(Field)
 
 
 
